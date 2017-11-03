@@ -84,7 +84,9 @@
           <h3 @click="numberChange(true)" v-if="shopData.packgoods === 0"><img src="/static/images/add.png"></h3>
           <p>数量: {{ shopNmber }}</p>
         </span>
-        <input class="buy_box_addr" v-model="addrFull" type="text"/>
+        <div class="addrChoiceWrapper"><input v-model="pickedAddr" :value="addrFull" type="radio" name="addr" id="addr1"/><label for="addr1">{{addrFull}}</label></div>
+        <div class="addrChoiceWrapper"><input v-model="pickedAddr" :value="addrFull" type="radio" name="addr" id="addr2"/><label for="addr2">{{addrFull}}</label></div>
+        <input class="buy_box_addr" v-model="addrFullToInput" type="text" placeholder="如果没有合适的地址可以手动填写"/>
         <span class="btn_box flex">
           <span class="cancel_btn f1" @click="buyShow = !buyShow">取消</span>
           <span class="buy_btn f1" @click="gotoPay()">去支付</span>
@@ -130,6 +132,8 @@ export default {
   name: 'shopContent',
   data () {
     return {
+      pickedAddr:'', // 选中的地址
+      addrFullToInput:'',
       addrFull:'',// 详细收货地址
       shopNmber: 1,             // 商品数量，默认1
       priceNum: '',             // 显示的价格
@@ -296,7 +300,7 @@ export default {
         console.log(data)
         this.shopData = data.result // 商品信息现在放在data.result
         this.priceNum = Number(this.shopData.shopPrice) * this.shopNmber
-        this.addr = data.$addr // 获取地址信息
+        this.addr = data.$address // 获取地址信息
         let city = this.addr.address_info
         city = city.replace(/&nbsp;/g,'')
         this.addrFull =  `${city}${this.addr.address}`
@@ -381,17 +385,25 @@ export default {
   .recommend h3{ color: #f23030; float: left; font-size: 0.36rem; line-height: 0.5rem; font-weight: 600}
   .recommend h4{ color: rgba(0, 0, 0, 0.5); float: right; font-size: 0.28rem; line-height: 0.5rem; font-weight: 400; }
   /*购买*/
-  .buy_box{ width: 100%; height: 100vh; background-color: rgba(0,0,0,0.1); position: fixed; top: 0; left: 0; z-index: 6; }
-  .add{ width: 100%; height: 0.6rem; padding: 0.15rem 0;background-color: #fff; position: absolute; bottom: 1.7rem; left: 0; }
+  .buy_box{display: flex; flex-direction: column; justify-content: flex-end; width: 100%; height: 100vh; background-color: rgba(0,0,0,0.1); position: fixed; top: 0; left: 0; z-index: 6; }
+  .buy_box_addr{width: 100%;font-size:0.32rem; text-align: center;height: 0.8rem;border:none;}
+  .buy_box .addrChoiceWrapper{position:relative;font-size:0.32rem; text-align: center;height: 0.8rem; line-height:0.8rem; background-color:#fff; border:none;padding: 0 0.48rem}
+  .buy_box .addrChoiceWrapper label{display:inline-block; text-align: center;width: 100%; height: 0.8rem; line-height:0.8rem;white-space:nowrap; overflow: hidden; text-overflow: ellipsis}
+  .buy_box .addrChoiceWrapper input{position: absolute;left: 0.24rem; top:0.28rem}
+  .add{ width: 100%; height: 0.6rem; padding: 0.15rem 0;background-color: #fff;  left: 0; }
   .add h3{ float: left; width: 0.6rem; height: 0.6rem; }
   .add h3:nth-child(2){ float: right; }
   .add p{ text-align: center; line-height: 0.7rem; font-size: 0.36rem; }
-  .btn_box{ width: 100%; height: 0.96rem; text-align: center; line-height: 0.96rem; position: absolute; bottom: 0; left: 0; }
+  .btn_box{ width: 100%; height: 0.96rem; text-align: center; line-height: 0.96rem; }
   .buy_btn{ background: linear-gradient(to right, #51d8f0 , #429ee4); color: #fff;}
   .cancel_btn{ background: linear-gradient(to right, #f23030 , #f97474); color: #fff;}
-  .price_p{ position: absolute; bottom: 2.46rem; left: 0; background-color: #fff; width: 100%; line-height: 0.88rem; text-align: center; border-bottom: 1px solid #eee; }
+  .price_p{background-color: #fff; width: 100%; line-height: 0.88rem; text-align: center; border-bottom: 1px solid #eee; }
   .price_p b{ color: #f23030; }
-  .buy_box_addr{width: 100%; height: 0.6rem;font-size:0.32rem; text-align: center; position: absolute;bottom: 0.96rem; left: 0;height: 0.8rem;border:none;}
+  /*placeholder*/
+  ::-webkit-input-placeholder { /* WebKit browsers */  color: #333; text-align: center; font-size: 0.32rem}
+  :-ms-input-placeholder {  /* Internet Explorer 10+ */ color: #333; text-align: center; font-size: 0.32rem}
+  :-moz-placeholder { /* Mozilla Firefox 4 to 18 */  color: #333; text-align: center;font-size: 0.32rem }
+  ::-moz-placeholder { /* Mozilla Firefox 19+ */  color: #333; text-align: center; font-size: 0.32rem}
   /*底部*/
   footer{ height: 0.96rem; position: fixed; bottom: 0; left: 0; width: 100%; background: #fff;}
   footer span{ text-align: center; line-height: 0.96rem; color: #fff}
