@@ -22,7 +22,7 @@
           <h3 @click="phoneShow = !phoneShow,isheadershow()">{{ Aphone }}</h3>
        </li>
        <router-link tag="li" to="/paddress">
-         <h2>我的收获地址</h2>
+         <h2>我的收货地址</h2>
        </router-link>
     </nav>
     <span class="btn">退出登录</span>

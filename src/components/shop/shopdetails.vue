@@ -272,7 +272,7 @@ export default {
         buyer_invoice:'',// 有？
         pick_up_id:0,// 有？
         order_class:this.shopData.order_class,
-        shipping_company_id:7450,// 有？
+        shipping_company_id:7405,// 有？
         packgoods:this.shopData.goods_id,
         pack_goods_list:this.shopData.pack_goods_list
       },{emulateJSON:true}).then(res=>{
