@@ -61,7 +61,7 @@ export default {
       orderLists: [
         {
           order_id: 0,
-          order_type: 1,                  // 0=待付款，1=待发货, 2=待收货， 3=待评价， 4=退款/售后
+          order_type: 1,                  // 0=待付款，1=待发货, 2=待收货，3=待评价， 4=退款/售后
           storeName: '广州美莱医院',       // 店铺名
           state: '待发货',                // 状态
           shopImg: 'static/images/plat1.png',    // 商品图片
@@ -69,46 +69,6 @@ export default {
           shopNumber: '1',             // 商品数量
           shopPrice: '39.00'           // 商品价格
         },
-        {
-          order_id: 1,
-          order_type: 1,
-          storeName: '广州健美医疗机构',
-          state: '待发货',
-          shopImg: 'static/images/plat1.png',
-          shopText: '养身保健体操服务 【广州健美医疗机构】',
-          shopNumber: '5',
-          shopPrice: '199.00'
-        },
-        {
-          order_id: 2,
-          order_type: 2,
-          storeName: '广州美莱医院',
-          state: '待收货',
-          shopImg: 'static/images/plat1.png',
-          shopText: '广州美莱通过严格选才标准，融汇业界医疗美容医生提供先进的医美技术，构建起一个学术、医术与艺术相结合的塑美平台',
-          shopNumber: '1',
-          shopPrice: '39.00'
-        },
-        {
-          order_id: 3,
-          order_type: 3,
-          storeName: '广州山卡拉整形机构',
-          state: '待评价',
-          shopImg: 'static/images/plat1.png',
-          shopText: '亚洲S曲线管理医生一对一服务，专业的人体美学知识，强大的形体管理数据库，量身管理，打造魔鬼身材。',
-          shopNumber: '2',
-          shopPrice: '78.00'
-        },
-        {
-          order_id: 4,
-          order_type: 4,
-          storeName: '广州山卡拉整形机构',
-          state: '退款成功',
-          shopImg: 'static/images/plat1.png',
-          shopText: '亚洲S曲线管理医生一对一服务，专业的人体美学知识，强大的形体管理数据库，量身管理，打造魔鬼身材。',
-          shopNumber: '3',
-          shopPrice: '120.00'
-        }
       ]
     }
   },
@@ -124,15 +84,54 @@ export default {
       this.orderState.liIndex = position - 1
     },
     getData () {
-      let ajaxData = 'uid=' + localStorage.getItem('userID')
-      let getSuccess = (data) => {
-        console.log(data)
-        // this.orderLists = data
+      let dataSent = {
+        uid:localStorage.getItem('userID'),
       }
-      let getError = (error) => {
-        console.log(error)
-      }
-      // Ajax.ajaxRequest('http://www.aikhome.com/index.php/apiv/order/myorderlist', 'post', getSuccess, getError, ajaxData)
+      this.$http.post('http://www.aikhome.com/index.php/apiv/member/my_order/my_order',dataSent,{emulateJSON:true}).then(res=>{
+//          order_id: 0,
+//          order_type: 1,                  // 0=待付款，1=待发货, 2=待收货，3=待评价， 4=退款/售后 , 5=交易成功（已评价）
+//          storeName: '广州美莱医院',       // 店铺名
+//          state: '待发货',                // 状态
+//          shopImg: 'static/images/plat1.png',    // 商品图片
+//          shopText: '魅力隆鼻整形服务 【广州美莱医院】',
+//          shopNumber: '1',             // 商品数量
+//          shopPrice: '39.00'           // 商品价格
+        let tempList = []
+        for (let item of res.body.data){
+          let order_type
+          switch (item.order_status){
+            case 0:
+              order_type = 0
+              break
+            case 1:
+              order_type = 1
+              break
+            case 2:
+              order_type = 2
+              break
+            case 4:
+              if(item.is_evaluate == 0){
+                order_type = 3
+              }else{
+                order_type = 5
+              }
+              break
+            case -1:
+            case -2:
+              order_type = 4
+              break
+          }
+          let tempItem = {
+            order_id: item.order_id,
+            order_type:order_type,
+            storeName:item.shop_name,
+            state: item.status_name,
+            shopImg: `http://www.aikhome.com/${item.order_item_list[0].picture.pic_cover_small}`,
+
+          }
+        }
+
+      })
     }
   },
   mounted () {

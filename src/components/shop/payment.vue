@@ -14,6 +14,7 @@
         </transition>
       </div>
     </div>
+
   </transition>
 </template>
 
@@ -26,6 +27,7 @@ export default {
     return {
       wechartShow: false,
       text: '',
+      pay:'',
     }
   },
   methods: {
@@ -82,11 +84,8 @@ export default {
     },
     // 支付宝支付
     aliPay () {
-//      this.text = '该支付暂不可用'
-//        this.wechartShow = !this.wechartShow
-//      setTimeout(() => {
-//        this.wechartShow = !this.wechartShow
-//      },500)
+      let url = `http://www.aikhome.com/index.php/wap/pay/alipay?no=${sessionStorage.getItem('alipayNum')}&total_amount=${this.paymentState.totalPrice}`
+      window.open(url)
     }
   },
   computed: {

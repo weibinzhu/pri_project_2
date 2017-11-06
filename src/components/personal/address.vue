@@ -61,7 +61,7 @@
       <transition name="selectBoxShow">
         <ul class="selectBox" v-show="selectBoxShow">
         <span class="iconfont icon-guanbi close" @click="hideSelectBox"></span>
-          <li v-for="(item,index) in currentList" @click="select(index)">{{item}}</li>
+          <li v-for="(item,index) in currentList" @click="select(item.id)">{{item.name}}</li>
         </ul>
       </transition>
     </div>
@@ -87,7 +87,7 @@ export default {
 
       selectBoxShow:false,// 地址选择的显隐
 
-      pList:['广东省','福建省','北京市','上海市','湖南省','湖北省'],// 省
+      pList:['加载中...'],// 省
       cList:['广州市','深圳市','珠海市','东莞市','佛山市','惠州市'],// 市
       dList:['番禺区','天河区','越秀区','白云区','黄埔区'],// 区
       currentList:[],
@@ -96,6 +96,7 @@ export default {
       receiverName:'',
       receiverMobile:'',
       receiverProvince:'',
+
       receiverCity:'',
       receiverDistrict:'',
       receiverAddr:'',
@@ -121,7 +122,18 @@ export default {
       // type: 点击的是省、市还是区，分别为0，1 ，2
       if (type == 0){
         this.currentListType = 0
-        this.currentList = this.pList
+        this.$http.get('http://www.aikhome.com/index.php/wap/Health/province').then(res=>{
+          let tempList = []
+          for (let item of res.body){
+            let temItem = {
+              name:item.province_name,
+              id:item.province_id
+            }
+            tempList.push(temItem)
+          }
+          this.pList = tempList
+          this.currentList = this.pList
+        })
       }else if(type == 1){
         this.currentListType = 1
         this.currentList = this.cList
@@ -136,13 +148,19 @@ export default {
     hideSelectBox(){
       this.selectBoxShow = false
     },// 隐藏省市区
-    select(index){
+    select(id){
       if(this.currentListType == 0){
-        this.receiverProvince = this.currentList[index]
+        this.receiverProvince = (this.pList.find(function(item){
+          return item.id == id
+        })).name
       }else if (this.currentListType == 1){
-        this.receiverCity = this.currentList[index]
+        this.receiverCity = (this.currentList.find(function(item){
+          return item.id == id
+        })).name
       }else if (this.currentListType == 2){
-        this.receiverDistrict = this.currentList[index]
+        this.receiverDistrict = (this.currentList.find(function(item){
+          return item.id == id
+        })).name
       }
       this.selectBoxShow = false
     },// 选择省市区具体项

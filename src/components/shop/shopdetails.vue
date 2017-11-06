@@ -86,7 +86,7 @@
         </span>
         <div class="addrChoiceWrapper"><input v-model="pickedAddr" :value="addrFull" type="radio" name="addr" id="addr1"/><label for="addr1">{{addrFull}}</label></div>
         <div class="addrChoiceWrapper"><input v-model="pickedAddr" :value="addrFull" type="radio" name="addr" id="addr2"/><label for="addr2">{{addrFull}}</label></div>
-        <input class="buy_box_addr" v-model="addrFullToInput" type="text" placeholder="如果没有合适的地址可以手动填写"/>
+        <input class="buy_box_addr" v-model="addrFullToInput" type="text" placeholder="如果没有合适的地址请到个人资料中添加" readonly="true"/>
         <span class="btn_box flex">
           <span class="cancel_btn f1" @click="buyShow = !buyShow">取消</span>
           <span class="buy_btn f1" @click="gotoPay()">去支付</span>
@@ -276,7 +276,8 @@ export default {
         packgoods:this.shopData.goods_id,
         pack_goods_list:this.shopData.pack_goods_list
       },{emulateJSON:true}).then(res=>{
-        console.log(res)
+        let number = res.body.slice(1,-2)
+        sessionStorage.setItem('alipayNum',number)
       })
     },
     // 增加减少商品数量
@@ -341,7 +342,7 @@ export default {
   .shop_top .icon-jiantou01{ float: left; margin-left: 0.2rem; }
   .details_content{ width: 100%; background-color: #fff; margin-bottom: 0.2rem; }
   .details_content span{ padding: 0.2rem; }
-  .details_content .details_banner{ width: 100%; height: 7.5rem; overflow: hidden; padding: 0; position: relative; }
+  .details_content .details_banner{ width: 100%; height: 4.24rem; overflow: hidden; padding: 0; position: relative; }
   .details_banner li{ background-image: url(/static/images/imgloading.png); background-size: 3.82rem 2.74rem; background-position: center center; background-repeat: no-repeat; }
   .details_text{ overflow: hidden; }
   .details_text p{ margin-bottom: 0.1rem; }
